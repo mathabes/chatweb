@@ -14,7 +14,7 @@ type CompanyOption = { id: string; name: string | null }
 type ThreadSummary = { id: string | null; created_at: string | null; closed_at: string | null; last_interaction: string | null }
 
 const API_OPTIONS = [
-  // DEV usa proxy do Vite (evita CORS). O proxy aponta para http://0.0.0.0:8008
+  // DEV usa proxy do Vite (evita CORS). O proxy aponta para http://127.0.0.1:8008
   { id: 'DEV', label: 'DEV', baseUrl: '' },
   { id: 'PROD', label: 'PROD', baseUrl: 'https://api.zibb.com.br' },
 ] as const
@@ -178,7 +178,7 @@ export default function Onboarding({ initial, onStart }: Props) {
             <select value={apiEnv} onChange={(e) => setApiEnv(e.target.value as 'DEV' | 'PROD')}>
               {API_OPTIONS.map((o) => (
                 <option key={o.id} value={o.id}>
-                  {o.label} ({o.baseUrl || 'proxy → http://0.0.0.0:8008'})
+                  {o.label} ({o.baseUrl || 'proxy → http://127.0.0.1:8008'})
                 </option>
               ))}
             </select>

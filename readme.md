@@ -13,7 +13,7 @@ Ele integra com o backend do `ai-framework` usando o provider existente **`simpl
 ### Requisitos
 
 - Node.js 18+ (recomendado)
-- Backend `ai-framework` rodando (por padrão em `http://localhost:8000`)
+- Backend `ai-framework` rodando em `http://127.0.0.1:8008`
 
 ### Como rodar
 
@@ -30,7 +30,7 @@ Abra o navegador no endereço impresso pelo Vite (normalmente `http://localhost:
 
 O projeto já vem com proxy no `vite.config.ts`:
 
-- chamadas do front para `/v1/...` são encaminhadas para `http://localhost:8000`
+- chamadas do front para `/v1/...` são encaminhadas para `http://127.0.0.1:8008`
 
 Se seu backend estiver em outra URL/porta, ajuste o `target` em `vite.config.ts`.
 
