@@ -397,7 +397,7 @@ export default function Chat({ settings, onReset }: Props) {
       id: uuid(),
       role: 'system',
       text:
-        'Conversa iniciada. Envie uma mensagem para o ai-framework (provider: simple).',
+        `Conversa iniciada. Envie uma mensagem para o ai-framework (provider: ${settings.provider || 'simple'}).`,
       createdAt: Date.now(),
     },
   ])
@@ -424,7 +424,7 @@ export default function Chat({ settings, onReset }: Props) {
         role: 'system',
         text:
           systemText ||
-          'Conversa iniciada. Envie uma mensagem para o ai-framework (provider: simple).',
+          `Conversa iniciada. Envie uma mensagem para o ai-framework (provider: ${settings.provider || 'simple'}).`,
         createdAt: now,
       },
     ])
@@ -442,7 +442,7 @@ export default function Chat({ settings, onReset }: Props) {
 
   const headerMeta = useMemo(() => {
     const base = (settings.apiBaseUrl || '').trim()
-    const apiEnv = base && base.includes('api.zibb.com.br') ? 'PROD' : 'DEV'
+    const apiEnv = settings.provider === 'zibb-teste' ? 'LOCAL + ZIBB' : base && base.includes('api.zibb.com.br') ? 'PROD' : 'DEV'
     return {
       companyId: settings.companyId,
       customerPhone: settings.customerPhone,
@@ -692,7 +692,7 @@ export default function Chat({ settings, onReset }: Props) {
       const outputRaw = typeof row?.output === 'string' ? row.output : null
       const payload = {
         success: true,
-        provider: 'simple',
+        provider: settings.provider || 'simple',
         data: {
           assistant_id: ta?.assistant_id ?? undefined,
           thread_current_assistant_id: ta?.assistant_id ?? undefined,

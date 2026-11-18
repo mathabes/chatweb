@@ -60,6 +60,7 @@ export default function App() {
         const customerName = (cJson?.name || cJson?.customer?.name || '').toString().trim() || undefined
 
         const next: ChatSettings = {
+          provider: saved?.provider ?? 'simple',
           companyId,
           customerPhone,
           customerName,

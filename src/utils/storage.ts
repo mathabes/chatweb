@@ -6,7 +6,8 @@ export function loadSettings(): ChatSettings | null {
   try {
     const raw = localStorage.getItem(KEY)
     if (!raw) return null
-    return JSON.parse(raw) as ChatSettings
+    const saved = JSON.parse(raw) as ChatSettings
+    return saved.provider === 'zibb-teste' ? { ...saved, apiBaseUrl: '' } : saved
   } catch {
     return null
   }

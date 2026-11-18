@@ -37,15 +37,17 @@ function formatIso(iso: string | null): string {
 export default function Onboarding({ initial, onStart }: Props) {
   const initialApi = useMemo(() => {
     const saved = (initial?.apiBaseUrl || '').trim()
+    if (initial?.provider === 'zibb-teste') return 'DEV'
     if (!saved) return 'DEV'
     if (saved.includes('api.zibb.com.br')) return 'PROD'
     return 'DEV'
-  }, [initial?.apiBaseUrl])
+  }, [initial?.apiBaseUrl, initial?.provider])
 
   const [apiEnv, setApiEnv] = useState<'DEV' | 'PROD'>(initialApi)
   const [companyId, setCompanyId] = useState(initial?.companyId ?? '')
   const [customerPhone, setCustomerPhone] = useState(initial?.customerPhone ?? '')
   const [customerName, setCustomerName] = useState(initial?.customerName ?? '')
+  const [provider, setProvider] = useState<'simple' | 'zibb-teste'>(initial?.provider ?? 'simple')
 
   const apiBaseUrl = useMemo(() => {
     const opt = API_OPTIONS.find((o) => o.id === apiEnv)
@@ -155,6 +157,7 @@ export default function Onboarding({ initial, onStart }: Props) {
   function startWithThread(threadId: string | null) {
     setThreadIdInLocation(threadId && threadId.trim() ? threadId.trim() : null)
     onStart({
+      provider,
       companyId: companyId.trim(),
       customerPhone: normalizeDigits(customerPhone),
       customerName: customerName.trim() || undefined,
@@ -168,7 +171,7 @@ export default function Onboarding({ initial, onStart }: Props) {
         <div>
           <div style={{ fontWeight: 700, fontSize: 18, marginBottom: 6 }}>Abrir conversa</div>
           <div className="helper">
-            Preencha os dados mínimos para o `simple` do `ai-framework`.
+            Preencha os dados para testar o `simple` ou o `zibb-teste` do `ai-framework`.
           </div>
         </div>
 
@@ -177,7 +180,7 @@ export default function Onboarding({ initial, onStart }: Props) {
             <label>API</label>
             <select value={apiEnv} onChange={(e) => setApiEnv(e.target.value as 'DEV' | 'PROD')}>
               {API_OPTIONS.map((o) => (
-                <option key={o.id} value={o.id}>
+                <option key={o.id} value={o.id} disabled={provider === 'zibb-teste' && o.id === 'PROD'}>
                   {o.label} ({o.baseUrl || 'proxy → http://127.0.0.1:8008'})
                 </option>
               ))}
@@ -209,6 +212,13 @@ export default function Onboarding({ initial, onStart }: Props) {
         </div>
 
         <div className="grid two">
+          <div className="field">
+            <label>Tipo de teste</label>
+            <select value={provider} onChange={(e) => { const next = e.target.value as 'simple' | 'zibb-teste'; setProvider(next); if (next === 'zibb-teste') setApiEnv('DEV') }}>
+              <option value="simple">Simple</option>
+              <option value="zibb-teste">Zibb (pedido real, sem disparo de mensagens)</option>
+            </select>
+          </div>
           <div className="field">
             <label>Telefone do usuário (somente dígitos)</label>
             <input

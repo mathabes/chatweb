@@ -1,4 +1,5 @@
 export type ChatSettings = {
+  provider?: 'simple' | 'zibb-teste'
   companyId: string
   customerPhone: string
   customerName?: string

@@ -7,9 +7,9 @@ function normalizeBaseUrl(baseUrl?: string): string {
 }
 
 export function buildMessagesUrl(settings: ChatSettings): string {
-  const base = normalizeBaseUrl(settings.apiBaseUrl)
+  const base = settings.provider === 'zibb-teste' ? '' : normalizeBaseUrl(settings.apiBaseUrl)
   // Quando base === '', usa proxy do Vite (mesma origin): /v1/...
-  return `${base}/v1/messages/simple/${encodeURIComponent(settings.companyId)}`
+  return `${base}/v1/messages/${settings.provider || 'simple'}/${encodeURIComponent(settings.companyId)}`
 }
 
 export async function sendMessage(
@@ -46,11 +46,12 @@ export async function sendMessage(
     rawText = await resp.text()
     data = JSON.parse(rawText) as AiFrameworkResponse
   } catch {
-    data = { success: false, provider: 'simple', error: `Resposta inválida (${resp.status})` }
+    data = { success: false, provider: settings.provider || 'simple', error: `Resposta inválida (${resp.status})` }
   }
 
   if (!resp.ok || data.success === false) {
-    const msg = data.error || `Erro HTTP ${resp.status}`
+    const detail = (data as AiFrameworkResponse & { detail?: unknown }).detail
+    const msg = data.error || (typeof detail === 'string' ? detail : '') || `Erro HTTP ${resp.status}`
     const err = new Error(msg)
     ;(err as any).response = data
     ;(err as any).status = resp.status
